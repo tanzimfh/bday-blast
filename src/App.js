@@ -40,7 +40,7 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-neutral-800 h-screen">
+    <div className="bg-neutral-800 h-dvh">
       <h1 className="text-white text-5xl font-bold justify-center flex pt-32">
         Birthday Blast
       </h1>
