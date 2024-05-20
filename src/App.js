@@ -6,7 +6,7 @@ import { initializeApp } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithRedirect,
+  signInWithPopup,
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
@@ -51,11 +51,8 @@ function App() {
 
 function Home({ user }) {
   return (
-    <div>
-      <div className="flex h-max items-center flex-row justify-center">
-      <div
-        className="bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 mr-2 rounded-lg flex"
-      >
+    <div className="flex h-max items-center flex-row justify-center">
+      <div className="bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 mr-2 rounded-lg flex">
         <img src={user.photoURL} className="size-8 rounded-full mr-2" />
         {user.displayName.split(" ")[0]}
       </div>
@@ -67,7 +64,6 @@ function Home({ user }) {
         Sign out
       </button>
     </div>
-    </div>
   );
 }
 
@@ -76,7 +72,7 @@ function signInButton() {
     <div className="justify-center flex">
       <button
         className="justify-center bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 rounded-lg hover:bg-neutral-300 transition"
-        onClick={() => signInWithRedirect(auth, provider)}
+        onClick={() => signInWithPopup(auth, provider)}
       >
         <FcGoogle className="inline-block mr-2 size-8" />
         Sign in with Google
