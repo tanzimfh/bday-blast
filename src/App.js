@@ -27,7 +27,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
-  prompt: 'select_account'
+  prompt: "select_account",
 });
 
 function App() {
@@ -39,6 +39,14 @@ function App() {
     });
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [user]);
+
   return (
     <div className="bg-neutral-800 h-dvh">
       <h1 className="text-white text-5xl font-bold justify-center flex pt-32">
@@ -47,7 +55,7 @@ function App() {
       <h2 className="text-white text-2xl justify-center flex pt-8 pb-32">
         Never forget a birthday again!
       </h2>
-      {user ? <Home user={user} /> : signInButton()}
+      {user ? <Home user={user} /> : <SignInButton />}
     </div>
   );
 }
@@ -70,7 +78,7 @@ function Home({ user }) {
   );
 }
 
-function signInButton() {
+function SignInButton() {
   return (
     <div className="justify-center flex">
       <button
