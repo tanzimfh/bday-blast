@@ -124,7 +124,7 @@ function Home({ user, events }) {
 function AddEvent() {
   return (
     <div className="bg-neutral-200 text-black w-full p-3 mt-4 rounded-lg">
-      <div className="flex">
+      <div className="flex flex-row">
         <input
           type="text"
           placeholder="New Event"
@@ -139,7 +139,7 @@ function AddEvent() {
           className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32"
         />
       </div>
-      <div className="flex">
+      <div className="flex flex-row">
         <input
           type="text"
           maxLength={35}
