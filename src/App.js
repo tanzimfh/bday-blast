@@ -36,16 +36,9 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setUser(user);
+      document.body.style.overflow = user ? "auto" : "hidden";
     });
   }, []);
-
-  useEffect(() => {
-    if (!user) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [user]);
 
   return (
     <div className="bg-neutral-800 h-dvh">
