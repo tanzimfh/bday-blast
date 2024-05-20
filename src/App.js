@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { FaSignOutAlt } from "react-icons/fa";
 
 import { initializeApp } from "firebase/app";
 import {
@@ -51,17 +52,30 @@ function App() {
 function Home({ user }) {
   return (
     <div>
-      <img src={user.photoURL} alt="User Profile" />
-      <button onClick={() => signOut(auth)}>Sign out</button>
+      <div className="flex h-max items-center flex-row justify-center">
+      <div
+        className="bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 mr-2 rounded-lg flex"
+      >
+        <img src={user.photoURL} className="size-8 rounded-full mr-2" />
+        {user.displayName.split(" ")[0]}
+      </div>
+      <button
+        className="bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 rounded-lg hover:bg-neutral-300 transition"
+        onClick={() => signOut(auth)}
+      >
+        <FaSignOutAlt className="inline-block mr-2 size-6 my-1" />
+        Sign out
+      </button>
+    </div>
     </div>
   );
 }
 
 function signInButton() {
   return (
-    <div className="flex h-max items-center flex-row justify-center">
+    <div className="justify-center flex">
       <button
-        className="bg-neutral-200 text-black text-xl px-4 py-2 rounded-lg hover:bg-neutral-300 transition"
+        className="justify-center bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 rounded-lg hover:bg-neutral-300 transition"
         onClick={() => signInWithRedirect(auth, provider)}
       >
         <FcGoogle className="inline-block mr-2 size-8" />
