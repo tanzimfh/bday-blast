@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaSignOutAlt } from "react-icons/fa";
 
+import logo from "./bday.png";
+
 import { initializeApp } from "firebase/app";
 import { getFirestore, getDocs, collection } from "firebase/firestore";
 
@@ -63,9 +65,10 @@ function App() {
 
   return (
     <div className="bg-neutral-800 h-dvh">
-      <h1 className="text-white text-4xl font-bold justify-center flex pt-32">
-        Birthday Blast
-      </h1>
+      <div className="justify-center flex pt-32">
+        <img src={logo} alt="logo" className="size-11 mr-3" />
+        <h1 className="text-white text-4xl font-bold">Birthday Blast</h1>
+      </div>
       <h2 className="text-white text-xl justify-center flex mt-8">
         Never forget a birthday again!
       </h2>
