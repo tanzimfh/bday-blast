@@ -63,10 +63,10 @@ function App() {
 
   return (
     <div className="bg-neutral-800 h-dvh">
-      <h1 className="text-white text-5xl font-bold justify-center flex pt-32">
+      <h1 className="text-white text-4xl font-bold justify-center flex pt-32">
         Birthday Blast
       </h1>
-      <h2 className="text-white text-2xl justify-center flex pt-8 pb-32">
+      <h2 className="text-white text-xl justify-center flex mt-8">
         Never forget a birthday again!
       </h2>
       {user ? <Home user={user} events={events} /> : <SignInButton />}
@@ -85,32 +85,36 @@ async function mySignOut() {
 function Home({ user, events }) {
   return (
     <div>
-      <div className="flex items-center flex-row justify-center">
-        <div className="bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 mr-2 rounded-lg flex">
+      <div className="flex items-center flex-row justify-center mt-8">
+        <div className="bg-neutral-200 text-black text-lg pl-2.5 pr-3 py-2 mr-2 rounded-lg flex">
           <img
             src={user.photoURL}
             alt={user.displayName}
-            className="size-8 rounded-full mr-2"
+            className="size-[30px] rounded-full mr-2"
           />
           {user.displayName.split(" ")[0]}
         </div>
         <button
-          className="bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 rounded-lg hover:bg-neutral-300 transition"
+          className="bg-neutral-200 text-black text-lg pl-2.5 pr-3 p-2 rounded-lg hover:bg-neutral-300 transition"
           onClick={mySignOut}
         >
-          <FaSignOutAlt className="inline-block mr-2 size-6 my-1" />
+          <FaSignOutAlt className="inline-block mr-2 size-5 my-1" />
           Sign out
         </button>
       </div>
-      <div className="flex">
-        <div className="flex-grow"></div>
-        <div>
+      <div className="m-4 flex-row flex">
+        <div className="flex-grow" />
+        <div className="w-full max-w-96">
           <AddEvent />
           {events.map((event) => (
-            <Event title={event.title} date={event.date.toDate()} notes={event.notes} />
+            <Event
+              title={event.title}
+              date={event.date.toDate()}
+              notes={event.notes}
+            />
           ))}
         </div>
-        <div className="flex-grow"></div>
+        <div className="flex-grow" />
       </div>
       ;
     </div>
@@ -119,29 +123,30 @@ function Home({ user, events }) {
 
 function AddEvent() {
   return (
-    <div className="bg-neutral-200 text-black text-xl w-[512px] p-3 m-4 rounded-lg">
+    <div className="bg-neutral-200 text-black w-full p-3 mt-4 rounded-lg">
       <div className="flex">
         <input
           type="text"
           placeholder="New Event"
-          maxLength={30}
+          maxLength={25}
           required="required"
-          className="bg-neutral-100 text-black text-lg p-2 rounded-lg h-max flex-grow"
+          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow"
         />
         <input
           type="date"
           required="required"
-          className="bg-neutral-100 text-black text-lg p-2 ml-2 rounded-lg h-max flex-grow"
+          value={new Date().toISOString().split("T")[0]}
+          className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32"
         />
       </div>
       <div className="flex">
         <input
           type="text"
-          maxLength={50}
+          maxLength={35}
           placeholder="Notes (optional)"
-          className="bg-neutral-100 text-neutral-600 text-lg p-2 mt-2 rounded-lg h-max flex-grow"
+          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 mt-2 rounded-lg h-10 flex-grow"
         />
-        <button className="bg-neutral-300 text-black text-xl p-2 ml-2 mt-2 rounded-lg h-max w-24 hover:bg-neutral-400 transition">
+        <button className="bg-neutral-300 text-black text-lg px-4 ml-2 mt-2 rounded-lg h-10 hover:bg-neutral-400 transition">
           Add
         </button>
       </div>
@@ -169,16 +174,18 @@ function Event({ title, date, notes }) {
   else dateString = (past ? "" : "in ") + days + " days" + (past ? " ago" : "");
 
   return (
-    <div className="bg-neutral-200 text-black text-xl w-[512px] px-3 py-2 m-4 rounded-lg">
+    <div className="bg-neutral-200 text-black w-full px-3 py-2 mt-4 rounded-lg">
       <div className="flex">
-        <div className="text-left">{title}</div>
+        <div className="text-left text-lg">{title}</div>
         <div className="flex-grow"></div>
-        <div className="text-right">{date.toDateString()}</div>
+        <div className="text-right text-base text-neutral-500">
+          {date.toDateString()}
+        </div>
       </div>
-      <div className="flex">
-        <div className="text-left text-lg text-neutral-500">{notes}</div>
+      <div className="flex text-base">
+        <div className="text-left text-neutral-500">{notes}</div>
         <div className="flex-grow"></div>
-        <div className={"text-right text-lg " + color}>{dateString}</div>
+        <div className={"text-right " + color}>{dateString}</div>
       </div>
     </div>
   );
@@ -194,12 +201,12 @@ async function mySignIn() {
 
 function SignInButton() {
   return (
-    <div className="justify-center flex">
+    <div className="justify-center flex mt-32">
       <button
-        className="justify-center bg-neutral-200 text-black text-xl pl-2.5 pr-3 py-2 rounded-lg hover:bg-neutral-300 transition"
+        className="justify-center bg-neutral-200 text-black text-lg pl-2.5 pr-3 py-2 rounded-lg hover:bg-neutral-300 transition"
         onClick={mySignIn}
       >
-        <FcGoogle className="inline-block mr-2 size-8" />
+        <FcGoogle className="inline-block mr-2 size-7 mb-0.5" />
         Sign in with Google
       </button>
     </div>
