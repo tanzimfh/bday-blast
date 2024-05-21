@@ -132,7 +132,7 @@ function Home({ user, events }) {
       </div>
       <div className="m-4 flex-row flex">
         <div className="flex-grow" />
-        <div className="w-full max-w-96">
+        <div className="w-screen max-w-96">
           <AddEvent user={user} />
           {events.map((event) => (
             <Event {...event} />
@@ -171,7 +171,7 @@ function AddEvent({ user }) {
   return (
     <form
       onSubmit={handleAdd}
-      className="bg-neutral-200 text-black w-full p-3 mt-4 rounded-lg"
+      className="bg-neutral-200 text-black p-3 mt-4 rounded-lg"
     >
       <div className="flex flex-row">
         <input
@@ -202,7 +202,7 @@ function AddEvent({ user }) {
         />
         <button
           type="submit"
-          className="bg-neutral-300 text-black text-lg px-4 ml-2 rounded-lg h-10 hover:bg-neutral-400 transition"
+          className="bg-neutral-300 text-black text-lg px-4 ml-2 rounded-lg h-10 hover:bg-neutral-400 transition w-20"
         >
           Add
         </button>
@@ -246,7 +246,7 @@ function Event({ id, title, date, notes }) {
   };
 
   return (
-    <div className="bg-neutral-200 text-black w-full px-3 py-2 mt-4 rounded-lg">
+    <div className="bg-neutral-200 text-black px-3 py-2 mt-4 rounded-lg">
       <div className="flex">
         <div className="text-left text-lg">{title}</div>
         <div className="flex-grow"></div>
