@@ -5,7 +5,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import logo from "./bday.png";
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, getDocs, collection } from "firebase/firestore";
+import { getFirestore, getDocs, collection, addDoc, query, orderBy } from "firebase/firestore";
 
 import {
   getAuth,
@@ -40,19 +40,28 @@ function App() {
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
 
+  const [eventTitle, setEventTitle] = useState("");
+  const [eventDate, setEventDate] = useState(
+    new Date(Date.now()).toISOString().split("T")[0]
+  );
+  const [eventNotes, setEventNotes] = useState("");
+
   const eventsCollection = collection(db, "events");
 
-  useEffect(() => {
-    const getEvents = async () => {
-      try {
-        const data = await getDocs(eventsCollection);
-        const filteredData = data.docs.map((doc) => doc.data());
-        setEvents(filteredData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const getEvents = async () => {
+    try {
+      const data = await getDocs(query(eventsCollection, orderBy("date")));
+      const filteredData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setEvents(filteredData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
+  useEffect(() => {
     getEvents();
   }, []);
 
@@ -64,7 +73,7 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-neutral-800 h-dvh">
+    <div className="bg-neutral-800 min-h-dvh">
       <div className="justify-center flex pt-32">
         <img src={logo} alt="logo" className="size-11 mr-3" />
         <h1 className="text-white text-4xl font-bold">Birthday Blast</h1>
@@ -72,7 +81,21 @@ function App() {
       <h2 className="text-white text-xl justify-center flex mt-8">
         Never forget a birthday again!
       </h2>
-      {user ? <Home user={user} events={events} /> : <SignInButton />}
+      {user ? (
+        <Home
+          user={user}
+          events={events}
+          getEvents={getEvents}
+          eventTitle={eventTitle}
+          setEventTitle={setEventTitle}
+          eventDate={eventDate}
+          setEventDate={setEventDate}
+          eventNotes={eventNotes}
+          setEventNotes={setEventNotes}
+        />
+      ) : (
+        <SignInButton />
+      )}
     </div>
   );
 }
@@ -85,7 +108,17 @@ async function mySignOut() {
   }
 }
 
-function Home({ user, events }) {
+function Home({
+  user,
+  events,
+  getEvents,
+  eventTitle,
+  setEventTitle,
+  eventDate,
+  setEventDate,
+  eventNotes,
+  setEventNotes,
+}) {
   return (
     <div>
       <div className="flex items-center flex-row justify-center mt-8">
@@ -108,11 +141,20 @@ function Home({ user, events }) {
       <div className="m-4 flex-row flex">
         <div className="flex-grow" />
         <div className="w-full max-w-96">
-          <AddEvent />
+          <AddEvent
+            getEvents={getEvents}
+            eventTitle={eventTitle}
+            setEventTitle={setEventTitle}
+            eventDate={eventDate}
+            setEventDate={setEventDate}
+            eventNotes={eventNotes}
+            setEventNotes={setEventNotes}
+          />
           {events.map((event) => (
             <Event
+              key={event.id}
               title={event.title}
-              date={event.date.toDate()}
+              date={event.date}
               notes={event.notes}
             />
           ))}
@@ -124,32 +166,57 @@ function Home({ user, events }) {
   );
 }
 
-function AddEvent() {
+function AddEvent({
+  getEvents,
+  eventTitle,
+  setEventTitle,
+  eventDate,
+  setEventDate,
+  eventNotes,
+  setEventNotes,
+}) {
   return (
     <div className="bg-neutral-200 text-black w-full p-3 mt-4 rounded-lg">
       <div className="flex flex-row">
         <input
           type="text"
           placeholder="New Event"
+          onChange={(e) => setEventTitle(e.target.value)}
           maxLength={25}
           required="required"
           className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow"
         />
         <input
           type="date"
+          onChange={(e) => setEventDate(e.target.value)}
           required="required"
-          value={new Date().toISOString().split("T")[0]}
+          value={eventDate}
           className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32"
         />
       </div>
       <div className="flex flex-row">
         <input
           type="text"
+          onChange={(e) => setEventNotes(e.target.value)}
           maxLength={35}
           placeholder="Notes (optional)"
           className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 mt-2 rounded-lg h-10 flex-grow"
         />
-        <button className="bg-neutral-300 text-black text-lg px-4 ml-2 mt-2 rounded-lg h-10 hover:bg-neutral-400 transition">
+        <button
+          className="bg-neutral-300 text-black text-lg px-4 ml-2 mt-2 rounded-lg h-10 hover:bg-neutral-400 transition"
+          onClick={async () => {
+            try {
+              await addDoc(collection(db, "events"), {
+                title: eventTitle,
+                date: new Date(eventDate).getTime(),
+                notes: eventNotes,
+              });
+              getEvents();
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+        >
           Add
         </button>
       </div>
@@ -160,6 +227,9 @@ function AddEvent() {
 function Event({ title, date, notes }) {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
+
+  const [year, month, day] = new Date(date).toISOString().split("T")[0].split('-').map(Number);
+  date = new Date(year, month - 1, day);
 
   const dateDiff = date - now;
   const days = Math.abs(Math.floor(dateDiff / (1000 * 60 * 60 * 24)));
@@ -189,6 +259,7 @@ function Event({ title, date, notes }) {
         <div className="text-left text-neutral-500">{notes}</div>
         <div className="flex-grow"></div>
         <div className={"text-right " + color}>{dateString}</div>
+        <button>  </button>
       </div>
     </div>
   );
