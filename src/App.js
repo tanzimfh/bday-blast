@@ -151,9 +151,8 @@ function AddEvent({ user }) {
   const [eventDate, setEventDate] = useState(now.toISOString().split("T")[0]);
   const [eventNotes, setEventNotes] = useState("");
 
-  const handleAdd = async () => {
-    if (!eventTitle || !eventDate)
-      return alert("Please fill in the event title and date.");
+  const handleAdd = async (e) => {
+    e.preventDefault();
     try {
       await addDoc(collection(db, "events"), {
         user: user.uid,
@@ -161,44 +160,54 @@ function AddEvent({ user }) {
         date: new Date(eventDate).getTime(),
         notes: eventNotes,
       });
+      setEventTitle("");
+      setEventDate(now.toISOString().split("T")[0]);
+      setEventNotes("");
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div className="bg-neutral-200 text-black w-full p-3 mt-4 rounded-lg">
+    <form
+      onSubmit={handleAdd}
+      className="bg-neutral-200 text-black w-full p-3 mt-4 rounded-lg"
+    >
       <div className="flex flex-row">
         <input
           type="text"
           placeholder="New Event"
+          value={eventTitle}
           onChange={(e) => setEventTitle(e.target.value)}
           maxLength={25}
+          required
           className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow"
         />
         <input
           type="date"
-          onChange={(e) => setEventDate(e.target.value)}
           value={eventDate}
+          onChange={(e) => setEventDate(e.target.value)}
+          required
           className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32"
         />
       </div>
-      <div className="flex flex-row">
+      <div className="flex flex-row mt-2">
         <input
           type="text"
+          value={eventNotes}
           onChange={(e) => setEventNotes(e.target.value)}
           maxLength={35}
           placeholder="Notes (optional)"
-          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 mt-2 rounded-lg h-10 flex-grow"
+          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow"
         />
         <button
-          className="bg-neutral-300 text-black text-lg px-4 ml-2 mt-2 rounded-lg h-10 hover:bg-neutral-400 transition"
-          onClick={handleAdd}
+          type="submit"
+          className="bg-neutral-300 text-black text-lg px-4 ml-2 rounded-lg h-10 hover:bg-neutral-400 transition"
         >
           Add
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 
