@@ -130,15 +130,13 @@ function Home({ user, events }) {
           Sign out
         </button>
       </div>
-      <div className="m-4 flex-row flex">
-        <div className="flex-grow" />
+      <div className="m-4 flex justify-center">
         <div className="w-[calc(100vw-2rem)] max-w-96">
           <AddEvent user={user} />
           {events.map((event) => (
             <Event {...event} />
           ))}
         </div>
-        <div className="flex-grow" />
       </div>
     </div>
   );
@@ -181,7 +179,7 @@ function AddEvent({ user }) {
           onChange={(e) => setEventTitle(e.target.value)}
           maxLength={25}
           required
-          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow"
+          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(100vw-12rem)]"
         />
         <input
           type="date"
@@ -198,7 +196,7 @@ function AddEvent({ user }) {
           onChange={(e) => setEventNotes(e.target.value)}
           maxLength={35}
           placeholder="Notes (optional)"
-          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow"
+          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(100vw-9rem)]"
         />
         <button
           type="submit"
