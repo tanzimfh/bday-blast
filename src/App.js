@@ -186,7 +186,7 @@ function AddEvent({ user }) {
           value={eventDate}
           onChange={(e) => setEventDate(e.target.value)}
           required
-          className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32"
+          className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32 min-w-32"
         />
       </div>
       <div className="flex flex-row mt-2">
