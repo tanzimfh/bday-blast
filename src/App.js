@@ -7,7 +7,6 @@ import logo from "./bday.png";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
-  getDocs,
   collection,
   addDoc,
   query,
@@ -15,6 +14,7 @@ import {
   orderBy,
   deleteDoc,
   doc,
+  onSnapshot,
 } from "firebase/firestore";
 
 import {
@@ -26,14 +26,12 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAlhVMVWhFX6JfeTAXxe1W59fXzJZ40uOs",
-  authDomain: "bday-blast.firebaseapp.com",
-  databaseURL: "https://bday-blast-default-rtdb.firebaseio.com",
-  projectId: "bday-blast",
-  storageBucket: "bday-blast.appspot.com",
-  messagingSenderId: "649887584528",
-  appId: "1:649887584528:web:4e46e23cf84794199f1595",
-  measurementId: "G-GCEDJW4BPH",
+  apiKey: "AIzaSyAha0I6Lu001An6O_wJ_p98w3hPqy0BpW8",
+  authDomain: "blast-eb7f5.firebaseapp.com",
+  projectId: "blast-eb7f5",
+  storageBucket: "blast-eb7f5.appspot.com",
+  messagingSenderId: "31262016010",
+  appId: "1:31262016010:web:ec3a41aa7839e786d195f3",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -59,32 +57,33 @@ function App() {
   const eventsCollection = collection(db, "events");
 
   const getEvents = async () => {
+    let unsubscribe;
     try {
-      let data = events;
       if (user) {
-        data = await getDocs(
-          query(
-            eventsCollection,
-            where("user", "==", user.uid),
-            orderBy("date")
-          )
+        const q = query(
+          eventsCollection,
+          where("user", "==", user.uid),
+          orderBy("date")
         );
-        data = data.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setEvents(data);
+
+        unsubscribe = onSnapshot(q, (snapshot) => {
+          setEvents(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data()
+            }))
+          );
+        });
       }
     } catch (error) {
       console.error(error);
     }
+    return unsubscribe;
   };
 
   useEffect(() => {
     getEvents();
-  }, []);
-
-  getEvents();
+  }, [user]);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -185,7 +184,6 @@ function Home({
         </div>
         <div className="flex-grow" />
       </div>
-      ;
     </div>
   );
 }
@@ -210,7 +208,6 @@ function AddEvent({
         date: new Date(eventDate).getTime(),
         notes: eventNotes,
       });
-      getEvents();
     } catch (error) {
       console.error(error);
     }
@@ -281,7 +278,6 @@ function Event({ id, title, date, notes, getEvents }) {
   const handleDelete = async () => {
     try {
       await deleteDoc(doc(db, "events", id));
-      getEvents();
     } catch (error) {
       console.error(error);
     }
