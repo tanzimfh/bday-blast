@@ -132,7 +132,7 @@ function Home({ user, events }) {
       </div>
       <div className="m-4 flex-row flex">
         <div className="flex-grow" />
-        <div className="w-screen max-w-96">
+        <div className="w-[calc(100vw-2rem)] max-w-96">
           <AddEvent user={user} />
           {events.map((event) => (
             <Event {...event} />
