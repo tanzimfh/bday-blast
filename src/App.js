@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt, FaTrash } from "react-icons/fa";
 
 import logo from "./bday.png";
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, getDocs, collection, addDoc, query, orderBy } from "firebase/firestore";
+import { getFirestore, getDocs, collection, addDoc, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 
 import {
   getAuth,
@@ -153,9 +153,11 @@ function Home({
           {events.map((event) => (
             <Event
               key={event.id}
+              id={event.id}
               title={event.title}
               date={event.date}
               notes={event.notes}
+              getEvents={getEvents}
             />
           ))}
         </div>
@@ -175,6 +177,19 @@ function AddEvent({
   eventNotes,
   setEventNotes,
 }) {
+  const handleAdd = async () => {
+    try {
+      await addDoc(collection(db, "events"), {
+        title: eventTitle,
+        date: new Date(eventDate).getTime(),
+        notes: eventNotes,
+      });
+      getEvents();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className="bg-neutral-200 text-black w-full p-3 mt-4 rounded-lg">
       <div className="flex flex-row">
@@ -204,18 +219,7 @@ function AddEvent({
         />
         <button
           className="bg-neutral-300 text-black text-lg px-4 ml-2 mt-2 rounded-lg h-10 hover:bg-neutral-400 transition"
-          onClick={async () => {
-            try {
-              await addDoc(collection(db, "events"), {
-                title: eventTitle,
-                date: new Date(eventDate).getTime(),
-                notes: eventNotes,
-              });
-              getEvents();
-            } catch (error) {
-              console.error(error);
-            }
-          }}
+          onClick={handleAdd}
         >
           Add
         </button>
@@ -224,7 +228,7 @@ function AddEvent({
   );
 }
 
-function Event({ title, date, notes }) {
+function Event({ id, title, date, notes, getEvents }) {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
@@ -246,6 +250,15 @@ function Event({ title, date, notes }) {
   else if (days === 1) dateString = past ? "yesterday" : "tomorrow";
   else dateString = (past ? "" : "in ") + days + " days" + (past ? " ago" : "");
 
+  const handleDelete = async () => {
+    try {
+      await deleteDoc(doc(db, "events", id));
+      getEvents();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="bg-neutral-200 text-black w-full px-3 py-2 mt-4 rounded-lg">
       <div className="flex">
@@ -259,7 +272,12 @@ function Event({ title, date, notes }) {
         <div className="text-left text-neutral-500">{notes}</div>
         <div className="flex-grow"></div>
         <div className={"text-right " + color}>{dateString}</div>
-        <button>  </button>
+        <button
+          className="bg-red-300 text-black text-lg p-1.5 ml-2 rounded-md hover:bg-red-400 transition"
+          onClick={handleDelete}
+        >
+          <FaTrash className="size-4" />
+        </button>
       </div>
     </div>
   );
