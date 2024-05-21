@@ -70,7 +70,7 @@ function App() {
           setEvents(
             snapshot.docs.map((doc) => ({
               id: doc.id,
-              ...doc.data()
+              ...doc.data(),
             }))
           );
         });
@@ -115,6 +115,7 @@ function App() {
       ) : (
         <SignInButton />
       )}
+      <div className="h-4"></div>
     </div>
   );
 }
