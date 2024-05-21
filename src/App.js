@@ -33,7 +33,7 @@ const firebaseConfig = {
   storageBucket: "bday-blast.appspot.com",
   messagingSenderId: "649887584528",
   appId: "1:649887584528:web:4e46e23cf84794199f1595",
-  measurementId: "G-GCEDJW4BPH"
+  measurementId: "G-GCEDJW4BPH",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -49,13 +49,6 @@ provider.setCustomParameters({
 function App() {
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
-  const [eventTitle, setEventTitle] = useState("");
-
-  const now = new Date(Date.now());
-  now.setHours(0, 0, 0, 0);
-  const [eventDate, setEventDate] = useState(now.toISOString().split("T")[0]);
-  const [eventNotes, setEventNotes] = useState("");
-
   const eventsCollection = collection(db, "events");
 
   const getEvents = async () => {
@@ -103,20 +96,7 @@ function App() {
       <h2 className="text-white text-xl justify-center flex mt-8">
         Never forget a birthday again!
       </h2>
-      {user ? (
-        <Home
-          user={user}
-          events={events}
-          eventTitle={eventTitle}
-          setEventTitle={setEventTitle}
-          eventDate={eventDate}
-          setEventDate={setEventDate}
-          eventNotes={eventNotes}
-          setEventNotes={setEventNotes}
-        />
-      ) : (
-        <SignInButton />
-      )}
+      {user ? <Home user={user} events={events} /> : <SignInButton />}
       <div className="h-4"></div>
     </div>
   );
@@ -130,16 +110,7 @@ async function mySignOut() {
   }
 }
 
-function Home({
-  user,
-  events,
-  eventTitle,
-  setEventTitle,
-  eventDate,
-  setEventDate,
-  eventNotes,
-  setEventNotes,
-}) {
+function Home({ user, events }) {
   return (
     <div>
       <div className="flex items-center flex-row justify-center mt-8">
@@ -162,23 +133,9 @@ function Home({
       <div className="m-4 flex-row flex">
         <div className="flex-grow" />
         <div className="w-full max-w-96">
-          <AddEvent
-            user={user}
-            eventTitle={eventTitle}
-            setEventTitle={setEventTitle}
-            eventDate={eventDate}
-            setEventDate={setEventDate}
-            eventNotes={eventNotes}
-            setEventNotes={setEventNotes}
-          />
+          <AddEvent user={user} />
           {events.map((event) => (
-            <Event
-              key={event.id}
-              id={event.id}
-              title={event.title}
-              date={event.date}
-              notes={event.notes}
-            />
+            <Event {...event} />
           ))}
         </div>
         <div className="flex-grow" />
@@ -187,15 +144,13 @@ function Home({
   );
 }
 
-function AddEvent({
-  user,
-  eventTitle,
-  setEventTitle,
-  eventDate,
-  setEventDate,
-  eventNotes,
-  setEventNotes,
-}) {
+function AddEvent({ user }) {
+  const [eventTitle, setEventTitle] = useState("");
+  const now = new Date(Date.now());
+  now.setHours(0, 0, 0, 0);
+  const [eventDate, setEventDate] = useState(now.toISOString().split("T")[0]);
+  const [eventNotes, setEventNotes] = useState("");
+
   const handleAdd = async () => {
     if (!eventTitle || !eventDate)
       return alert("Please fill in the event title and date.");
