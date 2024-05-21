@@ -179,7 +179,7 @@ function AddEvent({ user }) {
           onChange={(e) => setEventTitle(e.target.value)}
           maxLength={25}
           required
-          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(min(100vw-12rem, 84))]"
+          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(min(100vw-12rem, 84rem))]"
         />
         <input
           type="date"
