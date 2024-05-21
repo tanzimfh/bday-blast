@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { FaSignOutAlt, FaTrash } from "react-icons/fa";
+import { FaSignOutAlt, FaTrash, FaPencilAlt } from "react-icons/fa";
 
 import logo from "./bday.png";
 
@@ -26,14 +26,12 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAlhVMVWhFX6JfeTAXxe1W59fXzJZ40uOs",
-  authDomain: "bday-blast.firebaseapp.com",
-  databaseURL: "https://bday-blast-default-rtdb.firebaseio.com",
-  projectId: "bday-blast",
-  storageBucket: "bday-blast.appspot.com",
-  messagingSenderId: "649887584528",
-  appId: "1:649887584528:web:4e46e23cf84794199f1595",
-  measurementId: "G-GCEDJW4BPH",
+  apiKey: "AIzaSyAha0I6Lu001An6O_wJ_p98w3hPqy0BpW8",
+  authDomain: "blast-eb7f5.firebaseapp.com",
+  projectId: "blast-eb7f5",
+  storageBucket: "blast-eb7f5.appspot.com",
+  messagingSenderId: "31262016010",
+  appId: "1:31262016010:web:ec3a41aa7839e786d195f3",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -143,24 +141,27 @@ function Home({ user, events }) {
 }
 
 function AddEvent({ user }) {
-  const [eventTitle, setEventTitle] = useState("");
+  const [title, setTitle] = useState("");
   const now = new Date(Date.now());
   now.setHours(0, 0, 0, 0);
-  const [eventDate, setEventDate] = useState(now.toISOString().split("T")[0]);
-  const [eventNotes, setEventNotes] = useState("");
+  const [date, setDate] = useState(now.toISOString().split("T")[0]);
+  const [notes, setNotes] = useState("");
+  const [repeat, setRepeat] = useState("");
 
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
       await addDoc(collection(db, "events"), {
         user: user.uid,
-        title: eventTitle,
-        date: new Date(eventDate).getTime(),
-        notes: eventNotes,
+        title: title,
+        date: new Date(date).getTime(),
+        notes: notes,
+        repeat: repeat,
       });
-      setEventTitle("");
-      setEventDate(now.toISOString().split("T")[0]);
-      setEventNotes("");
+      setTitle("");
+      setDate(now.toISOString().split("T")[0]);
+      setNotes("");
+      setRepeat("");
     } catch (error) {
       console.error(error);
     }
@@ -175,16 +176,16 @@ function AddEvent({ user }) {
         <input
           type="text"
           placeholder="New Event"
-          value={eventTitle}
-          onChange={(e) => setEventTitle(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           maxLength={25}
           required
           className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(100vw-12rem)] cs:max-w-[14rem]"
         />
         <input
           type="date"
-          value={eventDate}
-          onChange={(e) => setEventDate(e.target.value)}
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
           required
           className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32 min-w-32"
         />
@@ -192,15 +193,30 @@ function AddEvent({ user }) {
       <div className="flex flex-row mt-2">
         <input
           type="text"
-          value={eventNotes}
-          onChange={(e) => setEventNotes(e.target.value)}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
           maxLength={25}
           placeholder="Notes (optional)"
-          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(100vw-9rem)]"
+          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(100vw-13.5rem)] cs:max-w-[12.5rem]"
         />
+        <select
+          className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-10 w-26"
+          onChange={(e) => setRepeat(e.target.value)}
+          value={repeat}
+          required
+        >
+          <option value="" disabled selected hidden>
+            Repeat
+          </option>
+          <option value="Once">Once</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Biweekly">Biweekly</option>
+          <option value="Monthly">Monthly</option>
+          <option value="Yearly">Yearly</option>
+        </select>
         <button
           type="submit"
-          className="bg-neutral-300 text-black text-lg px-4 ml-2 rounded-lg h-10 hover:bg-neutral-400 transition w-20"
+          className="bg-neutral-300 text-black text-lg text-center ml-2 rounded-lg h-10 hover:bg-neutral-400 transition w-14"
         >
           Add
         </button>
@@ -209,7 +225,7 @@ function AddEvent({ user }) {
   );
 }
 
-function Event({ id, title, date, notes }) {
+function Event({ id, title, date, notes, repeat }) {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
@@ -234,6 +250,11 @@ function Event({ id, title, date, notes }) {
   if (days === 0) dateString = "today";
   else if (days === 1) dateString = past ? "yesterday" : "tomorrow";
   else dateString = (past ? "" : "in ") + days + " days" + (past ? " ago" : "");
+  dateString = "(" + dateString + ")";
+
+  let repeatString = "";
+  if (repeat && repeat !== "Once")
+    repeatString += "repeats " + repeat.toLowerCase();
 
   const handleDelete = async () => {
     try {
@@ -244,24 +265,27 @@ function Event({ id, title, date, notes }) {
   };
 
   return (
-    <div className="bg-neutral-200 text-black px-3 py-2 mt-4 rounded-lg">
-      <div className="flex">
+    <div className="bg-neutral-200 text-black py-2 pl-3 pr-2 mt-4 rounded-lg">
+      <div className="flex mb-1">
         <div className="text-left text-lg">{title}</div>
-        <div className="flex-grow"></div>
-        <div className="text-right text-base text-neutral-500">
-          {date.toDateString()}
-        </div>
-      </div>
-      <div className="flex text-base">
-        <div className="text-left text-neutral-500">{notes}</div>
-        <div className="flex-grow"></div>
-        <div className={"text-right " + color}>{dateString}</div>
+        <div className="flex-grow" />
+
         <button
-          className="bg-red-300 text-black text-lg p-1.5 ml-2 rounded-md hover:bg-red-400 transition"
+          className="bg-red-300 hover:bg-red-400 transition h-8 w-8 rounded-md flex items-center justify-center"
           onClick={handleDelete}
         >
           <FaTrash className="size-4" />
         </button>
+      </div>
+      <div className="flex text-base">
+        <div className="text-right text-base text-neutral-500">
+          {date.toDateString()}
+        </div>
+        <div className={"text-left ml-1 " + color}>{dateString}</div>
+        <div className="flex-grow" />
+        <div className="text-right text-base text-neutral-500">
+          {repeatString}
+        </div>
       </div>
     </div>
   );
