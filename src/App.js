@@ -179,7 +179,7 @@ function AddEvent({ user }) {
           onChange={(e) => setEventTitle(e.target.value)}
           maxLength={25}
           required
-          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(min(100vw-12rem, 84rem))]"
+          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(min(100vw-12rem, 14rem))]"
         />
         <input
           type="date"
@@ -196,7 +196,7 @@ function AddEvent({ user }) {
           onChange={(e) => setEventNotes(e.target.value)}
           maxLength={35}
           placeholder="Notes (optional)"
-          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(min(100vw-9rem, 87rem))]"
+          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(100vw-9rem)]"
         />
         <button
           type="submit"
