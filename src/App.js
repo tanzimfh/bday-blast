@@ -196,7 +196,7 @@ function AddEvent({ user }) {
           onChange={(e) => setEventNotes(e.target.value)}
           maxLength={35}
           placeholder="Notes (optional)"
-          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(100vw-9rem)]"
+          className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(min(100vw-9rem, 87rem))]"
         />
         <button
           type="submit"
