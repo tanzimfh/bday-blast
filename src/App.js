@@ -105,7 +105,6 @@ function App() {
         <Home
           user={user}
           events={events}
-          getEvents={getEvents}
           eventTitle={eventTitle}
           setEventTitle={setEventTitle}
           eventDate={eventDate}
@@ -131,7 +130,6 @@ async function mySignOut() {
 function Home({
   user,
   events,
-  getEvents,
   eventTitle,
   setEventTitle,
   eventDate,
@@ -163,7 +161,6 @@ function Home({
         <div className="w-full max-w-96">
           <AddEvent
             user={user}
-            getEvents={getEvents}
             eventTitle={eventTitle}
             setEventTitle={setEventTitle}
             eventDate={eventDate}
@@ -178,7 +175,6 @@ function Home({
               title={event.title}
               date={event.date}
               notes={event.notes}
-              getEvents={getEvents}
             />
           ))}
         </div>
@@ -190,7 +186,6 @@ function Home({
 
 function AddEvent({
   user,
-  getEvents,
   eventTitle,
   setEventTitle,
   eventDate,
@@ -249,7 +244,7 @@ function AddEvent({
   );
 }
 
-function Event({ id, title, date, notes, getEvents }) {
+function Event({ id, title, date, notes }) {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
