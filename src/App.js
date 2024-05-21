@@ -5,7 +5,17 @@ import { FaSignOutAlt, FaTrash } from "react-icons/fa";
 import logo from "./bday.png";
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, getDocs, collection, addDoc, query, orderBy, deleteDoc, doc } from "firebase/firestore";
+import {
+  getFirestore,
+  getDocs,
+  collection,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 
 import {
   getAuth,
@@ -39,23 +49,32 @@ provider.setCustomParameters({
 function App() {
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
-
   const [eventTitle, setEventTitle] = useState("");
-  const [eventDate, setEventDate] = useState(
-    new Date(Date.now()).toISOString().split("T")[0]
-  );
+
+  const now = new Date(Date.now());
+  now.setHours(0, 0, 0, 0);
+  const [eventDate, setEventDate] = useState(now.toISOString().split("T")[0]);
   const [eventNotes, setEventNotes] = useState("");
 
   const eventsCollection = collection(db, "events");
 
   const getEvents = async () => {
     try {
-      const data = await getDocs(query(eventsCollection, orderBy("date")));
-      const filteredData = data.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setEvents(filteredData);
+      let data = events;
+      if (user) {
+        data = await getDocs(
+          query(
+            eventsCollection,
+            where("user", "==", user.uid),
+            orderBy("date")
+          )
+        );
+        data = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setEvents(data);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -64,6 +83,8 @@ function App() {
   useEffect(() => {
     getEvents();
   }, []);
+
+  getEvents();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -142,6 +163,7 @@ function Home({
         <div className="flex-grow" />
         <div className="w-full max-w-96">
           <AddEvent
+            user={user}
             getEvents={getEvents}
             eventTitle={eventTitle}
             setEventTitle={setEventTitle}
@@ -169,6 +191,7 @@ function Home({
 }
 
 function AddEvent({
+  user,
   getEvents,
   eventTitle,
   setEventTitle,
@@ -178,8 +201,11 @@ function AddEvent({
   setEventNotes,
 }) {
   const handleAdd = async () => {
+    if (!eventTitle || !eventDate)
+      return alert("Please fill in the event title and date.");
     try {
       await addDoc(collection(db, "events"), {
+        user: user.uid,
         title: eventTitle,
         date: new Date(eventDate).getTime(),
         notes: eventNotes,
@@ -188,7 +214,7 @@ function AddEvent({
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <div className="bg-neutral-200 text-black w-full p-3 mt-4 rounded-lg">
@@ -198,13 +224,11 @@ function AddEvent({
           placeholder="New Event"
           onChange={(e) => setEventTitle(e.target.value)}
           maxLength={25}
-          required="required"
           className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow"
         />
         <input
           type="date"
           onChange={(e) => setEventDate(e.target.value)}
-          required="required"
           value={eventDate}
           className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32"
         />
@@ -232,7 +256,11 @@ function Event({ id, title, date, notes, getEvents }) {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
-  const [year, month, day] = new Date(date).toISOString().split("T")[0].split('-').map(Number);
+  const [year, month, day] = new Date(date)
+    .toISOString()
+    .split("T")[0]
+    .split("-")
+    .map(Number);
   date = new Date(year, month - 1, day);
 
   const dateDiff = date - now;
