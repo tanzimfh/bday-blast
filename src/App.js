@@ -109,6 +109,11 @@ async function mySignOut() {
 }
 
 function Home({ user, events }) {
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState(new Date(Date.now()).toISOString().split("T")[0]);
+  const [notes, setNotes] = useState("");
+  const [repeat, setRepeat] = useState("");
+
   return (
     <div>
       <div className="flex items-center flex-row justify-center mt-8">
@@ -130,9 +135,26 @@ function Home({ user, events }) {
       </div>
       <div className="m-4 flex justify-center">
         <div className="w-[calc(100vw-2rem)] max-w-96">
-          <AddEvent user={user} />
+          <AddEvent
+            user={user}
+            title={title}
+            setTitle={setTitle}
+            date={date}
+            setDate={setDate}
+            notes={notes}
+            setNotes={setNotes}
+            repeat={repeat}
+            setRepeat={setRepeat}
+          />
           {events.map((event) => (
-            <Event {...event} />
+            <Event
+              key={event.id}
+              event={event}
+              setTitle={setTitle}
+              setDate={setDate}
+              setNotes={setNotes}
+              setRepeat={setRepeat}
+            />
           ))}
         </div>
       </div>
@@ -140,13 +162,19 @@ function Home({ user, events }) {
   );
 }
 
-function AddEvent({ user }) {
-  const [title, setTitle] = useState("");
+function AddEvent({
+  user,
+  title,
+  setTitle,
+  date,
+  setDate,
+  notes,
+  setNotes,
+  repeat,
+  setRepeat,
+}) {
   const now = new Date(Date.now());
   now.setHours(0, 0, 0, 0);
-  const [date, setDate] = useState(now.toISOString().split("T")[0]);
-  const [notes, setNotes] = useState("");
-  const [repeat, setRepeat] = useState("");
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -225,7 +253,9 @@ function AddEvent({ user }) {
   );
 }
 
-function Event({ id, title, date, notes, repeat }) {
+
+function Event({ event, setTitle, setDate, setNotes, setRepeat }) {
+  const { id, title, date, notes, repeat } = event;
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
@@ -234,9 +264,9 @@ function Event({ id, title, date, notes, repeat }) {
     .split("T")[0]
     .split("-")
     .map(Number);
-  date = new Date(year, month - 1, day);
+  const localDate = new Date(year, month - 1, day);
 
-  const dateDiff = date - now;
+  const dateDiff = localDate - now;
   const days = Math.abs(Math.floor(dateDiff / (1000 * 60 * 60 * 24)));
   const past = dateDiff < 0;
 
@@ -256,6 +286,14 @@ function Event({ id, title, date, notes, repeat }) {
   if (repeat && repeat !== "Once")
     repeatString += "repeats " + repeat.toLowerCase();
 
+  const handleEdit = async () => {
+    setTitle(title);
+    setDate(new Date(date).toISOString().split("T")[0]);
+    setNotes(notes);
+    setRepeat(repeat ? repeat : "Once");
+    await handleDelete();
+  };
+
   const handleDelete = async () => {
     try {
       await deleteDoc(doc(db, "events", id));
@@ -269,7 +307,12 @@ function Event({ id, title, date, notes, repeat }) {
       <div className="flex mb-1">
         <div className="text-left text-lg">{title}</div>
         <div className="flex-grow" />
-
+        <button
+          className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+          onClick={handleEdit}
+        >
+          <FaPencilAlt className="size-4" />
+        </button>
         <button
           className="bg-red-300 hover:bg-red-400 transition h-8 w-8 rounded-md flex items-center justify-center"
           onClick={handleDelete}
@@ -279,7 +322,7 @@ function Event({ id, title, date, notes, repeat }) {
       </div>
       <div className="flex text-base">
         <div className="text-right text-base text-neutral-500">
-          {date.toDateString()}
+          {localDate.toDateString()}
         </div>
         <div className={"text-left ml-1 " + color}>{dateString}</div>
         <div className="flex-grow" />
