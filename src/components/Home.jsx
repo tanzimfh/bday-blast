@@ -1,11 +1,10 @@
 import {
-  collection,
   onSnapshot,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../config/firebase";
+import { collectionRef } from "../config/firebase";
 
 import { useState, useEffect } from "react";
 import SignOutButton from "./SignOutButton";
@@ -13,14 +12,13 @@ import Body from "./Body";
 
 export default function Home({ user }) {
   const [events, setEvents] = useState([]);
-  const eventsCollection = collection(db, "events");
 
   const getEvents = async () => {
     let unsubscribe;
     try {
       if (user) {
         const q = query(
-          eventsCollection,
+          collectionRef,
           where("user", "==", user.uid),
           orderBy("date")
         );

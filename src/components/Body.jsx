@@ -1,5 +1,5 @@
-import { collection, doc, addDoc, deleteDoc } from "firebase/firestore";
-import { db } from "../config/firebase";
+import { doc, addDoc, deleteDoc } from "firebase/firestore";
+import { collectionRef } from "../config/firebase";
 
 import { useState } from "react";
 import Event from "./Event";
@@ -13,7 +13,7 @@ export default function Body({ user, events }) {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, "events"), {
+      await addDoc(collectionRef, {
         user: user.uid,
         title: title,
         date: new Date(date).getTime(),
@@ -39,7 +39,7 @@ export default function Body({ user, events }) {
 
   const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(db, "events", id));
+      await deleteDoc(doc(collectionRef, id));
     } catch (error) {
       console.error(error);
     }
