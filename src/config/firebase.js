@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, collection } from "firebase/firestore";
 
@@ -14,6 +15,11 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
+const appCheck = initializeAppCheck( app, {
+  provider: new ReCaptchaEnterpriseProvider("6LejjuUpAAAAANcvZqY76YRvplx2ahYTaUOnORbE"),
+  isTokenAutoRefreshEnabled: true
+});
 
 export const db = getFirestore(app);
 export const collectionRef = collection(db, "events-dev");
