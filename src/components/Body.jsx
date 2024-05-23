@@ -10,6 +10,15 @@ export default function Body({ user, events }) {
   const [notes, setNotes] = useState("");
   const [repeat, setRepeat] = useState("");
 
+  const handleAiAdd = async (e) => {
+    e.preventDefault();
+    try {
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
@@ -47,6 +56,13 @@ export default function Body({ user, events }) {
 
   return (
     <div className="w-[calc(100vw-2rem)] max-w-96">
+      <form
+        onSubmit={handleAiAdd}
+        className="bg-neutral-200 text-black p-3 mt-4 rounded-lg"
+      >
+
+        </form>
+
       <form
         onSubmit={handleAdd}
         className="bg-neutral-200 text-black p-3 mt-4 rounded-lg"
