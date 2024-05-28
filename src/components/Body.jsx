@@ -4,7 +4,11 @@ import { collectionRef } from "../config/firebase";
 import { useState } from "react";
 import Event from "./Event";
 
+import { HiSparkles } from "react-icons/hi2";
+
 export default function Body({ user, events }) {
+  const [aiText, setAiText] = useState("");
+
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [notes, setNotes] = useState("");
@@ -13,8 +17,8 @@ export default function Body({ user, events }) {
   const handleAiAdd = async (e) => {
     e.preventDefault();
     try {
-    }
-    catch (error) {
+      
+    } catch (error) {
       console.error(error);
     }
   };
@@ -58,19 +62,41 @@ export default function Body({ user, events }) {
     <div className="w-[calc(100vw-2rem)] max-w-96">
       <form
         onSubmit={handleAiAdd}
-        className="bg-neutral-200 text-black p-3 mt-4 rounded-lg"
+        className="bg-neutral-200 text-black p-3 mt-8 rounded-lg flex-col flex"
       >
+        {/** <div className="text-xl mb-2 ml-0.5">Let Gemini handle it</div> */}
+        <textarea
+          placeholder="Briefly describe an event"
+          value={aiText}
+          onChange={(e) => setAiText(e.target.value)}
+          required
+          rows={2}
+          maxLength={100}
+          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-base p-2 rounded-lg flex-grow"
+        />
+        <button className="flex-row flex items-center justify-center mt-2 h-12 rounded-lg bg-gradient-to-r from-blue-400 via-pink-400 to-blue-400 bg-size-200 bg-pos-0 hover:bg-pos-100 duration-500 transition-all">
+          <HiSparkles color="white" className="size-6 mr-2" />
+          <div className="text-lg text-white drop-shadow-lg">
+            Let Gemini handle it
+          </div>
+        </button>
+      </form>
 
-        </form>
+      <div className="flex flex-row mt-2 items-center">
+        <div className="h-0.5 bg-neutral-200 flex-grow mx-4 rounded-full"></div>
+        <div className="text-white">OR</div>
+        <div className="h-0.5 bg-neutral-200 flex-grow mx-4 rounded-full"></div>
+      </div>
 
       <form
         onSubmit={handleAdd}
-        className="bg-neutral-200 text-black p-3 mt-4 rounded-lg"
+        className="bg-neutral-200 text-black p-3 mt-2 mb-12 rounded-lg"
       >
+        <div className="text-xl mb-2 ml-0.5">Enter manually</div>
         <div className="flex flex-row">
           <input
             type="text"
-            placeholder="New Event"
+            placeholder="Event Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={25}
@@ -119,6 +145,7 @@ export default function Body({ user, events }) {
         </div>
       </form>
 
+      <div className="text-xl ml-0.5 mb-1 text-white">Your Events</div>
       {events.map((event) => (
         <Event
           key={event.id}

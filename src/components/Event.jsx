@@ -33,7 +33,7 @@ export default function Event({ event, handleEdit, handleDelete }) {
     repeatString += "repeats " + repeat.toLowerCase();
 
   return (
-    <div className="bg-neutral-200 text-black py-2 pl-3 pr-2 mt-4 rounded-lg">
+    <div className="bg-neutral-200 text-black py-2 pl-3 pr-2 mb-4 rounded-lg">
 
       <div className="flex mb-1">
         <div className="text-left text-lg">{title}</div>

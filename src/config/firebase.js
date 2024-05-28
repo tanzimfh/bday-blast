@@ -31,6 +31,7 @@ const vertexAI = getVertexAI(app);
 
 export const model = getGenerativeModel(vertexAI, {
   model: "gemini-1.5-flash-preview-0514",
+  generationConfig: {},
 });
 
 export const db = getFirestore(app);
