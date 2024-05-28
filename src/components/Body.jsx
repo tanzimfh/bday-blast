@@ -49,7 +49,7 @@ export default function Body({ user, events }) {
         user: user.uid,
         title: parsedObj.title,
         date: new Date(parsedObj.date).getTime(),
-        notes: aiText,
+        notes: "Gemini prompt: " + aiText,
         repeat: parsedObj.repeat,
       });
     } catch (error) {
@@ -67,7 +67,7 @@ export default function Body({ user, events }) {
         user: user.uid,
         title: title,
         date: new Date(date).getTime(),
-        notes: notes,
+        notes: "Notes: " + notes,
         repeat: repeat,
       });
       setTitle("");
@@ -82,7 +82,7 @@ export default function Body({ user, events }) {
   const handleEdit = async (id, title, date, notes, repeat) => {
     setTitle(title);
     setDate(new Date(date).toISOString().split("T")[0]);
-    setNotes(notes);
+    setNotes(notes.replace("Gemini prompt: ", "").replace("Notes: ", ""));
     setRepeat(repeat ? repeat : "Once");
     await handleDelete(id);
   };
@@ -173,7 +173,7 @@ export default function Body({ user, events }) {
             type="text"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            maxLength={25}
+            maxLength={115}
             placeholder="Notes (optional)"
             className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(100vw-13.5rem)] cs:max-w-[12.5rem]"
           />

@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
+import { MdStickyNote2 } from "react-icons/md";
+import { IoIosArrowUp } from "react-icons/io";
 
 export default function Event({ event, handleEdit, handleDelete }) {
+  const [open, setOpen] = useState(false);
   const { id, title, date: UnixDate, notes, repeat } = event;
 
   const now = new Date();
@@ -34,10 +38,19 @@ export default function Event({ event, handleEdit, handleDelete }) {
 
   return (
     <div className="bg-neutral-200 text-black py-2 pl-3 pr-2 mb-4 rounded-lg">
-
       <div className="flex mb-1">
         <div className="text-left text-lg">{title}</div>
         <div className="flex-grow" />
+        <button
+          className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? (
+            <IoIosArrowUp className="size-5" />
+          ) : (
+            <MdStickyNote2 className="size-[18px]" />
+          )}
+        </button>
         <button
           className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
           onClick={() => handleEdit(id, title, UnixDate, notes, repeat)}
@@ -64,7 +77,9 @@ export default function Event({ event, handleEdit, handleDelete }) {
           {repeatString}
         </div>
       </div>
-
+      {open && (
+        <div className=" mt-2 flex text-base text-neutral-500">{notes}</div>
+      )}
     </div>
   );
 }
