@@ -84,15 +84,10 @@ export default function Body({ user, events }) {
     setDate(new Date(date).toISOString().split("T")[0]);
     setNotes(notes);
     setRepeat(repeat ? repeat : "Once");
-    await deleteEvent(id);
+    await handleDelete(id);
   };
 
-  const handleDelete = async (id, title) => {
-    window.confirm('Are you sure you want to delete "' + title + '"?') &&
-      (await deleteEvent(id));
-  };
-
-  const deleteEvent = async (id) => {
+  const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(collectionRef, id));
     } catch (error) {

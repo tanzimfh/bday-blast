@@ -46,7 +46,9 @@ export default function Event({ event, handleEdit, handleDelete }) {
         </button>
         <button
           className="bg-red-300 hover:bg-red-400 transition h-8 w-8 rounded-md flex items-center justify-center"
-          onClick={() => handleDelete(id, title)}
+          onClick={() => {
+            window.confirm('Delete "' + title + '"?') && handleDelete(id);
+          }}
         >
           <FaTrash className="size-4" />
         </button>
