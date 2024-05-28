@@ -1,5 +1,5 @@
 import { doc, addDoc, deleteDoc } from "firebase/firestore";
-import { collectionRef } from "../config/firebase";
+import { collectionRef, model } from "../config/firebase";
 
 import { useState } from "react";
 import Event from "./Event";
@@ -7,7 +7,20 @@ import Event from "./Event";
 import { HiSparkles } from "react-icons/hi2";
 
 export default function Body({ user, events }) {
+  const now = new Date();
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
   const [aiText, setAiText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
@@ -16,11 +29,35 @@ export default function Body({ user, events }) {
 
   const handleAiAdd = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setFailed(false);
     try {
-      
+      const prompt =
+        days[now.getDay()] +
+        " " +
+        now.toISOString().split("T")[0] +
+        " " +
+        aiText;
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+      const parsedObj = JSON.parse(text.replace(/```json\n|```/g, ""));
+      if (Object.values(parsedObj).includes("N/A")) {
+        console.log(parsedObj);
+        throw new Error("Failed to extract information");
+      }
+      await addDoc(collectionRef, {
+        user: user.uid,
+        title: parsedObj.title,
+        date: new Date(parsedObj.date).getTime(),
+        notes: aiText,
+        repeat: parsedObj.repeat,
+      });
     } catch (error) {
+      setFailed(true);
       console.error(error);
     }
+    setAiText("");
+    setLoading(false);
   };
 
   const handleAdd = async (e) => {
@@ -58,24 +95,43 @@ export default function Body({ user, events }) {
     }
   };
 
+  const onEnterPress = (e) => {
+    if (e.key === "Enter" && e.shiftKey === false) {
+      e.preventDefault();
+      handleAiAdd(e);
+    }
+  };
+
   return (
     <div className="w-[calc(100vw-2rem)] max-w-96">
       <form
         onSubmit={handleAiAdd}
         className="bg-neutral-200 text-black p-3 mt-8 rounded-lg flex-col flex"
       >
-        {/** <div className="text-xl mb-2 ml-0.5">Let Gemini handle it</div> */}
         <textarea
-          placeholder="Briefly describe an event"
+          placeholder={
+            failed
+              ? "Failed to extract information. Please try again with more details."
+              : "Briefly describe an event"
+          }
           value={aiText}
           onChange={(e) => setAiText(e.target.value)}
+          onKeyDown={onEnterPress}
           required
           rows={2}
           maxLength={100}
-          className="bg-neutral-100 placeholder:text-neutral-400 text-black text-base p-2 rounded-lg flex-grow"
+          className={
+            "bg-neutral-100 text-black text-base p-2 rounded-lg flex-grow placeholder:text-" +
+            (failed ? "red" : "neutral") +
+            "-400"
+          }
         />
         <button className="flex-row flex items-center justify-center mt-2 h-12 rounded-lg bg-gradient-to-r from-blue-400 via-pink-400 to-blue-400 bg-size-200 bg-pos-0 hover:bg-pos-100 duration-500 transition-all">
-          <HiSparkles color="white" className="size-6 mr-2" />
+          {loading ? (
+            <div className="h-6 w-6 mr-2 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-white" />
+          ) : (
+            <HiSparkles color="white" className="size-6 mr-2" />
+          )}
           <div className="text-lg text-white drop-shadow-lg">
             Let Gemini handle it
           </div>
@@ -90,7 +146,7 @@ export default function Body({ user, events }) {
 
       <form
         onSubmit={handleAdd}
-        className="bg-neutral-200 text-black p-3 mt-2 mb-12 rounded-lg"
+        className="bg-neutral-200 text-black p-3 pt-2 mt-2 mb-8 rounded-lg"
       >
         <div className="text-xl mb-2 ml-0.5">Enter manually</div>
         <div className="flex flex-row">
@@ -131,6 +187,7 @@ export default function Body({ user, events }) {
               Repeat
             </option>
             <option value="Once">Once</option>
+            <option value="Daily">Daily</option>
             <option value="Weekly">Weekly</option>
             <option value="Biweekly">Biweekly</option>
             <option value="Monthly">Monthly</option>
@@ -144,8 +201,9 @@ export default function Body({ user, events }) {
           </button>
         </div>
       </form>
-
-      <div className="text-xl ml-0.5 mb-1 text-white">Your Events</div>
+      {events.length > 0 && (
+        <div className="text-xl ml-0.5 mb-1 text-white">Your Events</div>
+      )}
       {events.map((event) => (
         <Event
           key={event.id}

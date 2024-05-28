@@ -20,7 +20,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const appCheck = initializeAppCheck(app, {
+initializeAppCheck(app, {
   provider: new ReCaptchaEnterpriseProvider(
     "6LejjuUpAAAAANcvZqY76YRvplx2ahYTaUOnORbE"
   ),
@@ -30,8 +30,9 @@ const appCheck = initializeAppCheck(app, {
 const vertexAI = getVertexAI(app);
 
 export const model = getGenerativeModel(vertexAI, {
-  model: "gemini-1.5-flash-preview-0514",
-  generationConfig: {},
+  model: "gemini-1.5-pro-preview-0514",
+  generationConfig: { maxOutputTokens: 128 },
+  systemInstruction: `You will extract information about an event from a brief description. Each prompt will be in the format "<day> YYYY-MM-DD <info>", where <day> is the current day of the week, YYYY-MM-DD is the current date, and <info> is information about an event. Your response should be in json format: {"title": "title for event", "date": "YYYY-MM-DD", "repeat": "Once"/"Daily"/"Weekly"/"Biweekly"/"Monthly"/"Yearly"}. Use the current day and date to determine the date of the event from relative dates. If a field isn't explicitly specified, use your best judgement to infer it. If a field can't be inferred at all, leave it as "N/A".`,
 });
 
 export const db = getFirestore(app);
