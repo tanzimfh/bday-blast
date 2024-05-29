@@ -39,7 +39,7 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
     } else if (repeat === "Monthly") {
       nextDate = new Date(
         now.getFullYear(),
-        now.getMonth() - 1,
+        now.getMonth(),
         date.getDate()
       );
       if (nextDate < now) nextDate.setMonth(nextDate.getMonth() + 1);
