@@ -19,12 +19,12 @@ export default function App() {
 
   return (
     <div className="bg-neutral-800 min-h-dvh">
-      <div className="justify-center flex pt-32">
+      <div className="items-center justify-center flex pt-32">
         <img src={logo} alt="logo" className="size-11 mr-3" />
         <h1 className="text-white text-4xl font-bold">Birthday Blast</h1>
       </div>
-      <h2 className="text-white text-xl justify-center flex mt-8">
-        Never forget a birthday again!
+      <h2 className="text-white text-xl justify-center flex mt-8 text-center">
+        Never miss an important event again!
       </h2>
       {user ? <Home user={user} /> : <SignInButton />}
       <div className="h-4"></div>
