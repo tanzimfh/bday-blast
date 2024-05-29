@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import { MdStickyNote2 } from "react-icons/md";
 import { IoIosArrowUp } from "react-icons/io";
-import { PiArrowArcRightBold } from "react-icons/pi";
+import { PiArrowArcRightBold, PiRepeatBold } from "react-icons/pi";
 
 export default function Event({ event, handleEdit, editDate, handleDelete }) {
   const [open, setOpen] = useState(false);
@@ -28,7 +28,8 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
     if (repeat === "Daily") nextDate = now;
     else if (repeat === "Weekly")
       nextDate = new Date(
-        now.getTime() + (7 - (now.getDay() - date.getDay())) * 24 * 60 * 60 * 1000
+        now.getTime() +
+          (7 - (now.getDay() - date.getDay())) * 24 * 60 * 60 * 1000
       );
     else if (repeat === "Biweekly") {
       nextDate = new Date(
@@ -37,11 +38,7 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
         date.getDate() + Math.ceil(days / 14) * 14
       );
     } else if (repeat === "Monthly") {
-      nextDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        date.getDate()
-      );
+      nextDate = new Date(now.getFullYear(), now.getMonth(), date.getDate());
       if (nextDate < now) nextDate.setMonth(nextDate.getMonth() + 1);
     } else if (repeat === "Yearly") {
       nextDate = new Date(now.getFullYear(), date.getMonth(), date.getDate());
@@ -60,10 +57,6 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
   else if (days === 1) dateString = past ? "yesterday" : "tomorrow";
   else dateString = (past ? "" : "in ") + days + " days" + (past ? " ago" : "");
   dateString = "(" + dateString + ")";
-
-  let repeatString = "";
-  if (repeat && repeat !== "Once")
-    repeatString += "repeats " + repeat.toLowerCase();
 
   return (
     <div className="bg-neutral-200 text-black py-2 pl-3 pr-2 mb-4 rounded-lg">
@@ -112,9 +105,11 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
         </div>
         <div className={"text-left ml-1 " + color}>{dateString}</div>
         <div className="flex-grow" />
-        <div className="text-right text-base text-neutral-500">
-          {repeatString}
-        </div>
+        {repeat && repeat !== "Once" && (
+          <div className="text-right text-base text-neutral-500 flex items-center mx-1">
+            <PiRepeatBold className="size-4 mr-1" /> {repeat}
+          </div>
+        )}
       </div>
       {open && (
         <div className=" mt-2 flex text-base text-neutral-500">{notes}</div>
