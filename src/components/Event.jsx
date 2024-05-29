@@ -17,13 +17,11 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
     .map(Number);
 
   const date = new Date(year, month - 1, day);
-  const dateDiff = date - now;
-  const days = Math.abs(Math.floor(dateDiff / (1000 * 60 * 60 * 24)));
-  const past = dateDiff < 0;
+  const days = ~~((date - now) / (1000 * 60 * 60 * 24));
 
   let canMove = false;
   let nextDate = 0;
-  if (past && repeat && repeat !== "Once") {
+  if (days < 0 && repeat && repeat !== "Once") {
     canMove = true;
     if (repeat === "Daily") nextDate = now;
     else if (repeat === "Weekly")
@@ -47,69 +45,77 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
   }
 
   let color;
-  if (past || days < 1) color = "text-red-600";
+  if (days < 1) color = "text-red-600";
   else if (days < 8) color = "text-orange-600";
   else if (days < 31) color = "text-yellow-600";
   else color = "text-green-600";
 
   let dateString;
   if (days === 0) dateString = "today";
-  else if (days === 1) dateString = past ? "yesterday" : "tomorrow";
-  else dateString = (past ? "" : "in ") + days + " days" + (past ? " ago" : "");
-  dateString = "(" + dateString + ")";
+  else if (days === -1) dateString = "yesterday";
+  else if (days === 1) dateString = "tomorrow";
+  else {
+    const moment = require("moment");
+    dateString = moment.duration(days, "days").humanize(true);
+  }
 
   return (
     <div className="bg-neutral-200 text-black py-2 pl-3 pr-2 mb-4 rounded-lg">
-      <div className="flex mb-1">
+      <div className="flex">
         <div className="text-left text-lg">{title}</div>
-        <div className="flex-grow" />
-        {canMove && (
-          <button
-            className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
-            onClick={() => editDate(id, nextDate)}
-          >
-            <PiArrowArcRightBold className="size-5" />
-          </button>
-        )}
-        {notes.length - notes.indexOf(":") > 2 && (
-          <button
-            className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? (
-              <IoIosArrowUp className="size-5" />
-            ) : (
-              <MdStickyNote2 className="size-[18px]" />
-            )}
-          </button>
-        )}
-        <button
-          className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
-          onClick={() => handleEdit(id, title, UnixDate, notes, repeat)}
-        >
-          <FaPencilAlt className="size-4" />
-        </button>
-        <button
-          className="bg-red-300 hover:bg-red-400 transition h-8 w-8 rounded-md flex items-center justify-center"
-          onClick={() => {
-            window.confirm('Delete "' + title + '"?') && handleDelete(id);
-          }}
-        >
-          <FaTrash className="size-4" />
-        </button>
-      </div>
-
-      <div className="flex text-base">
-        <div className="text-right text-base text-neutral-500">
-          {date.toDateString()}
-        </div>
-        <div className={"text-left ml-1 " + color}>{dateString}</div>
         <div className="flex-grow" />
         {repeat && repeat !== "Once" && (
           <div className="text-right text-base text-neutral-500 flex items-center mx-1">
             <PiRepeatBold className="size-4 mr-1" /> {repeat}
           </div>
         )}
+      </div>
+
+      <div className="flex text-base">
+        <div>
+          <div className="text-base text-left text-neutral-500">
+            {date.toDateString()}
+          </div>
+          <div className={color}>{dateString}</div>
+        </div>
+        <div className="flex-grow" />
+
+        <div className="flex mt-auto" id="buttons">
+          {canMove && (
+            <button
+              className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+              onClick={() => editDate(id, nextDate)}
+            >
+              <PiArrowArcRightBold className="size-5" />
+            </button>
+          )}
+          {notes.length - notes.indexOf(":") > 2 && (
+            <button
+              className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? (
+                <IoIosArrowUp className="size-5" />
+              ) : (
+                <MdStickyNote2 className="size-[18px]" />
+              )}
+            </button>
+          )}
+          <button
+            className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+            onClick={() => handleEdit(id, title, UnixDate, notes, repeat)}
+          >
+            <FaPencilAlt className="size-4" />
+          </button>
+          <button
+            className="bg-red-300 hover:bg-red-400 transition h-8 w-8 rounded-md flex items-center justify-center"
+            onClick={() => {
+              window.confirm('Delete "' + title + '"?') && handleDelete(id);
+            }}
+          >
+            <FaTrash className="size-4" />
+          </button>
+        </div>
       </div>
       {open && (
         <div className=" mt-2 flex text-base text-neutral-500">{notes}</div>
