@@ -83,3 +83,31 @@ export default function Event({ event, handleEdit, handleDelete }) {
     </div>
   );
 }
+
+/** BUGGY TOOLTIP
+const Tooltip = ({ children, content }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleMouseEnter = () => setShowTooltip(true);
+  const handleMouseLeave = () => setShowTooltip(false);
+
+  return (
+    <div className="relative group">
+      <button
+        className="group-hover:text-opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {children}
+      </button>
+      {showTooltip && (
+        <div
+          className="absolute top-[calc(-100%-4px)] transform -translate-x-[calc(50%-16px)] py-1 px-2 rounded-md bg-neutral-300 shadow-lg text-neutral-500 whitespace-nowrap overflow-hidden"
+        >
+          {content}
+        </div>
+      )}
+    </div>
+  );
+};
+*/
