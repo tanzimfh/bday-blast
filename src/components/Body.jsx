@@ -1,4 +1,4 @@
-import { doc, addDoc, deleteDoc } from "firebase/firestore";
+import { doc, addDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { collectionRef, model } from "../config/firebase";
 
 import { useState } from "react";
@@ -86,6 +86,16 @@ export default function Body({ user, events }) {
     setRepeat(repeat ? repeat : "Once");
     await handleDelete(id);
   };
+
+  const editDate = async (id, date) => {
+    try {
+      await updateDoc(doc(collectionRef, id), {
+        date: new Date(date).getTime(),
+      });
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const handleDelete = async (id) => {
     try {
@@ -209,6 +219,7 @@ export default function Body({ user, events }) {
           key={event.id}
           event={event}
           handleEdit={handleEdit}
+          editDate={editDate}
           handleDelete={handleDelete}
         />
       ))}

@@ -2,8 +2,9 @@ import { useState } from "react";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import { MdStickyNote2 } from "react-icons/md";
 import { IoIosArrowUp } from "react-icons/io";
+import { PiArrowArcRightBold } from "react-icons/pi";
 
-export default function Event({ event, handleEdit, handleDelete }) {
+export default function Event({ event, handleEdit, editDate, handleDelete }) {
   const [open, setOpen] = useState(false);
   const { id, title, date: UnixDate, notes, repeat } = event;
 
@@ -19,6 +20,34 @@ export default function Event({ event, handleEdit, handleDelete }) {
   const dateDiff = date - now;
   const days = Math.abs(Math.floor(dateDiff / (1000 * 60 * 60 * 24)));
   const past = dateDiff < 0;
+
+  let canMove = false;
+  let nextDate = 0;
+  if (past && repeat && repeat !== "Once") {
+    canMove = true;
+    if (repeat === "Daily") nextDate = now;
+    else if (repeat === "Weekly")
+      nextDate = new Date(
+        now.getTime() + (7 - (now.getDay() - date.getDay())) * 24 * 60 * 60 * 1000
+      );
+    else if (repeat === "Biweekly") {
+      nextDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate() + Math.ceil(days / 14) * 14
+      );
+    } else if (repeat === "Monthly") {
+      nextDate = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
+        date.getDate()
+      );
+      if (nextDate < now) nextDate.setMonth(nextDate.getMonth() + 1);
+    } else if (repeat === "Yearly") {
+      nextDate = new Date(now.getFullYear(), date.getMonth(), date.getDate());
+      if (nextDate < now) nextDate.setFullYear(nextDate.getFullYear() + 1);
+    }
+  }
 
   let color;
   if (past || days < 1) color = "text-red-600";
@@ -41,16 +70,26 @@ export default function Event({ event, handleEdit, handleDelete }) {
       <div className="flex mb-1">
         <div className="text-left text-lg">{title}</div>
         <div className="flex-grow" />
-        <button
-          className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? (
-            <IoIosArrowUp className="size-5" />
-          ) : (
-            <MdStickyNote2 className="size-[18px]" />
-          )}
-        </button>
+        {canMove && (
+          <button
+            className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+            onClick={() => editDate(id, nextDate)}
+          >
+            <PiArrowArcRightBold className="size-5" />
+          </button>
+        )}
+        {notes.length - notes.indexOf(":") > 2 && (
+          <button
+            className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? (
+              <IoIosArrowUp className="size-5" />
+            ) : (
+              <MdStickyNote2 className="size-[18px]" />
+            )}
+          </button>
+        )}
         <button
           className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
           onClick={() => handleEdit(id, title, UnixDate, notes, repeat)}

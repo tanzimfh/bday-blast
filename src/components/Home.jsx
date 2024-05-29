@@ -1,9 +1,4 @@
-import {
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { collectionRef } from "../config/firebase";
 
 import { useState, useEffect } from "react";
@@ -27,7 +22,14 @@ export default function Home({ user }) {
           setEvents(
             snapshot.docs.map((doc) => ({
               id: doc.id,
-              ...doc.data(),
+              title: doc.data().title,
+              date: doc.data().date,
+              notes:
+                (doc.data().notes.startsWith("Notes:") ||
+                doc.data().notes.startsWith("Gemini prompt:")
+                  ? ""
+                  : "Notes: ") + doc.data().notes,
+              repeat: "repeat" in doc.data() ? doc.data().repeat : "Once",
             }))
           );
         });
