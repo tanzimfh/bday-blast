@@ -14,7 +14,7 @@ export default function SignInButton() {
   return (
     <div className="justify-center flex mt-32">
       <button
-        className="justify-center bg-neutral-200 text-black text-lg pl-2.5 pr-3 py-2 rounded-lg hover:bg-neutral-300 transition"
+        className="justify-center bg-neutral-200 text-black text-lg pl-2.5 pr-3 py-2 rounded-lg hover:bg-neutral-300 transition ease-out"
         onClick={mySignIn}
       >
         <FcGoogle className="inline-block mr-2 size-7 mb-0.5" />

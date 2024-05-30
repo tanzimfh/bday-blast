@@ -136,10 +136,10 @@ export default function Body({ user, events }) {
           maxLength={100}
           className={
             "bg-neutral-100 text-black text-base p-2 rounded-lg flex-grow" +
-            (failed && " placeholder:text-red-400")
+            (failed ? " placeholder:text-red-400" : "")
           }
         />
-        <button className="flex-row flex items-center justify-center mt-2 h-12 rounded-lg bg-gradient-to-r from-blue-400 via-pink-400 to-blue-400 bg-size-200 bg-pos-0 hover:bg-pos-100 duration-500 transition-all">
+        <button className="flex-row flex items-center justify-center mt-2 h-12 rounded-lg bg-gradient-to-r from-blue-400 via-pink-400 to-blue-400 bg-size-200 bg-pos-0 hover:bg-pos-100 duration-500 transition-all ease-out">
           {loading ? (
             <div className="h-6 w-6 mr-2 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-white" />
           ) : (
@@ -179,7 +179,7 @@ export default function Body({ user, events }) {
             required
             className={
               "bg-neutral-100 text-base p-2 ml-2 rounded-lg h-11 w-32 min-w-32" +
-              (date === "" && " text-gray-400")
+              (date === "" ? " text-gray-400" : "")
             }
           />
         </div>
@@ -196,7 +196,7 @@ export default function Body({ user, events }) {
           <select
             className={
               "bg-neutral-100 text-base p-2 ml-2 rounded-lg h-10 w-26" +
-              (repeat === "" && " text-gray-400")
+              (repeat === "" ? " text-gray-400" : "")
             }
             onChange={(e) => setRepeat(e.target.value)}
             value={repeat}
@@ -214,7 +214,7 @@ export default function Body({ user, events }) {
           </select>
           <button
             type="submit"
-            className="bg-neutral-300 text-black text-lg text-center ml-2 rounded-lg h-10 hover:bg-neutral-400 transition w-14"
+            className="bg-neutral-300 text-black text-lg text-center ml-2 rounded-lg h-10 hover:bg-neutral-400 transition ease-out w-14"
           >
             Add
           </button>

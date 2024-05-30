@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import { MdStickyNote2 } from "react-icons/md";
 import { IoIosArrowUp } from "react-icons/io";
-import { PiArrowArcRightBold, PiRepeatBold } from "react-icons/pi";
+import { PiRepeatBold } from "react-icons/pi";
 
 export default function Event({ event, handleEdit, editDate, handleDelete }) {
   const [open, setOpen] = useState(false);
@@ -64,32 +64,33 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
       <div className="flex" id="outer">
         <div className="" id="left">
           <div className="text-left text-lg font-semibold">{title}</div>
-          <div className="text-base text-left text-black">
+          <div className="text-base text-left text-black -my-0.5">
             {date.toDateString()}
           </div>
           <div className={color}>{dateString}</div>
         </div>
         <div className="flex-grow" />
         <div className="grid grid-cols-1 place-items-end" id="right">
-          <div className="h-8">
+          <div className="h-8 text-right text-base text-neutral-500 flex items-center">
             {repeat && repeat !== "Once" && (
-              <div className="text-right text-base text-neutral-500 flex items-center">
-                <PiRepeatBold className="size-4 mr-1" /> {repeat}
-                {canMove && (
-                  <button
-                    className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md ml-1 flex items-center justify-center"
-                    onClick={() => editDate(id, nextDate)}
-                  >
-                    <PiArrowArcRightBold className="size-5 text-black" />
-                  </button>
-                )}
-              </div>
+              <>
+                <div
+                  className={
+                    "transition ease-out h-6 w-6 rounded-md flex items-center justify-center" +
+                    (canMove ? " hover:bg-neutral-300 cursor-pointer" : "")
+                  }
+                  onClick={() => canMove && editDate(id, nextDate)}
+                >
+                  <PiRepeatBold className="size-4" />
+                </div>
+                {repeat}
+              </>
             )}
           </div>
           <div className="flex mt-auto" id="buttons">
             {notes.length - notes.indexOf(":") > 2 && (
               <button
-                className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+                className="bg-neutral-300 hover:bg-neutral-400 transition ease-out h-8 w-8 rounded-md mr-2 flex items-center justify-center"
                 onClick={() => setOpen(!open)}
               >
                 {open ? (
@@ -100,18 +101,18 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
               </button>
             )}
             <button
-              className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+              className="bg-neutral-300 hover:bg-neutral-400 transition ease-out h-8 w-8 rounded-md mr-2 flex items-center justify-center"
               onClick={() => handleEdit(id, title, UnixDate, notes, repeat)}
             >
               <FaPencilAlt className="size-4" />
             </button>
             <button
-              className="bg-red-300 hover:bg-red-400 transition h-8 w-8 rounded-md flex items-center justify-center"
+              className="bg-red-300 hover:bg-red-400 transition ease-out h-8 w-8 rounded-md flex items-center justify-center"
               onClick={() => {
                 window.confirm('Delete "' + title + '"?') && handleDelete(id);
               }}
             >
-              <FaTrash className="size-4" />
+              <FaTrash className="size-4 text-red-950" />
             </button>
           </div>
         </div>
