@@ -168,7 +168,7 @@ export default function Body({ user, events }) {
             placeholder="Event Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            maxLength={25}
+            maxLength={24}
             required
             className="bg-neutral-100 text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(100vw-12rem)] cs:max-w-[14rem]"
           />
