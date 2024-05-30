@@ -60,66 +60,63 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
   }
 
   return (
-    <div className="bg-neutral-200 text-black py-2 pl-3 pr-2 mb-4 rounded-lg">
-      <div className="flex">
-        <div className="text-left text-lg">{title}</div>
-        <div className="flex-grow" />
-        {repeat && repeat !== "Once" && (
-          <div className="text-right text-base text-neutral-500 flex items-center mx-1">
-            <PiRepeatBold className="size-4 mr-1" /> {repeat}
-          </div>
-        )}
-      </div>
-
-      <div className="flex text-base">
-        <div>
-          <div className="text-base text-left text-neutral-500">
+    <div className="bg-neutral-200 text-black p-3 pt-2 mb-4 rounded-lg">
+      <div className="flex" id="outer">
+        <div className="" id="left">
+          <div className="text-left text-lg font-semibold">{title}</div>
+          <div className="text-base text-left text-black">
             {date.toDateString()}
           </div>
           <div className={color}>{dateString}</div>
         </div>
         <div className="flex-grow" />
-
-        <div className="flex mt-auto" id="buttons">
-          {canMove && (
+        <div className="grid grid-cols-1 place-items-end" id="right">
+          <div className="h-8">
+            {repeat && repeat !== "Once" && (
+              <div className="text-right text-base text-neutral-500 flex items-center">
+                <PiRepeatBold className="size-4 mr-1" /> {repeat}
+                {canMove && (
+                  <button
+                    className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md ml-1 flex items-center justify-center"
+                    onClick={() => editDate(id, nextDate)}
+                  >
+                    <PiArrowArcRightBold className="size-5 text-black" />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="flex mt-auto" id="buttons">
+            {notes.length - notes.indexOf(":") > 2 && (
+              <button
+                className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
+                onClick={() => setOpen(!open)}
+              >
+                {open ? (
+                  <IoIosArrowUp className="size-5" />
+                ) : (
+                  <MdStickyNote2 className="size-[18px]" />
+                )}
+              </button>
+            )}
             <button
               className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
-              onClick={() => editDate(id, nextDate)}
+              onClick={() => handleEdit(id, title, UnixDate, notes, repeat)}
             >
-              <PiArrowArcRightBold className="size-5" />
+              <FaPencilAlt className="size-4" />
             </button>
-          )}
-          {notes.length - notes.indexOf(":") > 2 && (
             <button
-              className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
-              onClick={() => setOpen(!open)}
+              className="bg-red-300 hover:bg-red-400 transition h-8 w-8 rounded-md flex items-center justify-center"
+              onClick={() => {
+                window.confirm('Delete "' + title + '"?') && handleDelete(id);
+              }}
             >
-              {open ? (
-                <IoIosArrowUp className="size-5" />
-              ) : (
-                <MdStickyNote2 className="size-[18px]" />
-              )}
+              <FaTrash className="size-4" />
             </button>
-          )}
-          <button
-            className="bg-neutral-300 hover:bg-neutral-400 transition h-8 w-8 rounded-md mr-2 flex items-center justify-center"
-            onClick={() => handleEdit(id, title, UnixDate, notes, repeat)}
-          >
-            <FaPencilAlt className="size-4" />
-          </button>
-          <button
-            className="bg-red-300 hover:bg-red-400 transition h-8 w-8 rounded-md flex items-center justify-center"
-            onClick={() => {
-              window.confirm('Delete "' + title + '"?') && handleDelete(id);
-            }}
-          >
-            <FaTrash className="size-4" />
-          </button>
+          </div>
         </div>
       </div>
-      {open && (
-        <div className=" mt-2 flex text-base text-neutral-500">{notes}</div>
-      )}
+      {open && <div className="flex text-base text-neutral-500">{notes}</div>}
     </div>
   );
 }

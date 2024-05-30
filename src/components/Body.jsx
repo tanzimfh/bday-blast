@@ -8,6 +8,7 @@ import { HiSparkles } from "react-icons/hi2";
 
 export default function Body({ user, events }) {
   const now = new Date();
+  now.setHours(0, 0, 0, 0);
   const days = [
     "Sunday",
     "Monday",
@@ -93,9 +94,9 @@ export default function Body({ user, events }) {
         date: new Date(date).getTime(),
       });
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -125,15 +126,17 @@ export default function Body({ user, events }) {
               : "Briefly describe an event"
           }
           value={aiText}
-          onChange={(e) => setAiText(e.target.value)}
+          onChange={(e) => {
+            setFailed(false);
+            setAiText(e.target.value);
+          }}
           onKeyDown={onEnterPress}
           required
           rows={2}
           maxLength={100}
           className={
-            "bg-neutral-100 text-black text-base p-2 rounded-lg flex-grow placeholder:text-" +
-            (failed ? "red" : "neutral") +
-            "-400"
+            "bg-neutral-100 text-black text-base p-2 rounded-lg flex-grow" +
+            (failed && " placeholder:text-red-400")
           }
         />
         <button className="flex-row flex items-center justify-center mt-2 h-12 rounded-lg bg-gradient-to-r from-blue-400 via-pink-400 to-blue-400 bg-size-200 bg-pos-0 hover:bg-pos-100 duration-500 transition-all">
@@ -142,7 +145,7 @@ export default function Body({ user, events }) {
           ) : (
             <HiSparkles color="white" className="size-6 mr-2" />
           )}
-          <div className="text-lg text-white drop-shadow-lg">
+          <div className="text-lg text-white drop-shadow-lg font-semibold">
             Let Gemini handle it
           </div>
         </button>
@@ -150,7 +153,7 @@ export default function Body({ user, events }) {
 
       <div className="flex flex-row mt-2 items-center">
         <div className="h-0.5 bg-neutral-200 flex-grow mx-4 rounded-full"></div>
-        <div className="text-white">OR</div>
+        <div className="text-white font-semibold">OR</div>
         <div className="h-0.5 bg-neutral-200 flex-grow mx-4 rounded-full"></div>
       </div>
 
@@ -158,8 +161,8 @@ export default function Body({ user, events }) {
         onSubmit={handleAdd}
         className="bg-neutral-200 text-black p-3 pt-2 mt-2 mb-8 rounded-lg"
       >
-        <div className="text-xl mb-2 ml-0.5">Enter manually</div>
-        <div className="flex flex-row">
+        <div className="text-xl mb-2 ml-0.5 font-semibold">Enter manually</div>
+        <div className="flex flex-row text-black">
           <input
             type="text"
             placeholder="Event Title"
@@ -167,28 +170,34 @@ export default function Body({ user, events }) {
             onChange={(e) => setTitle(e.target.value)}
             maxLength={25}
             required
-            className="bg-neutral-100 placeholder:text-neutral-400 text-black text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(100vw-12rem)] cs:max-w-[14rem]"
+            className="bg-neutral-100 text-lg p-2 rounded-lg h-11 flex-grow max-w-[calc(100vw-12rem)] cs:max-w-[14rem]"
           />
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-11 w-32 min-w-32"
+            className={
+              "bg-neutral-100 text-base p-2 ml-2 rounded-lg h-11 w-32 min-w-32" +
+              (date === "" && " text-gray-400")
+            }
           />
         </div>
 
-        <div className="flex flex-row mt-2">
+        <div className="flex flex-row mt-2 text-neutral-500">
           <input
             type="text"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             maxLength={115}
             placeholder="Notes (optional)"
-            className="bg-neutral-100 text-neutral-500 placeholder:text-neutral-400 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(100vw-13.5rem)] cs:max-w-[12.5rem]"
+            className="bg-neutral-100 text-base p-2 rounded-lg h-10 flex-grow max-w-[calc(100vw-13.5rem)] cs:max-w-[12.5rem]"
           />
           <select
-            className="bg-neutral-100 text-neutral-500 text-base p-2 ml-2 rounded-lg h-10 w-26"
+            className={
+              "bg-neutral-100 text-base p-2 ml-2 rounded-lg h-10 w-26" +
+              (repeat === "" && " text-gray-400")
+            }
             onChange={(e) => setRepeat(e.target.value)}
             value={repeat}
             required
