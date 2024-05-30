@@ -31,9 +31,7 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
       );
     else if (repeat === "Biweekly") {
       nextDate = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate() + Math.ceil(days / 14) * 14
+        UnixDate + Math.ceil(-days / 14) * 14 * 24 * 60 * 60 * 1000
       );
     } else if (repeat === "Monthly") {
       nextDate = new Date(now.getFullYear(), now.getMonth(), date.getDate());
