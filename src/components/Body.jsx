@@ -30,6 +30,12 @@ export default function Body({ user, events }) {
 
   const handleAiAdd = async (e) => {
     e.preventDefault();
+    const input = aiText;
+    setAiText("");
+    if (loading || input.length < 5) {
+      setFailed(true);
+      return;
+    }
     setLoading(true);
     setFailed(false);
     try {
@@ -38,7 +44,7 @@ export default function Body({ user, events }) {
         " " +
         now.toISOString().split("T")[0] +
         " " +
-        aiText;
+        input;
       const result = await model.generateContent(prompt);
       const text = result.response.text();
       const parsedObj = JSON.parse(text.replace(/```json\n|```/g, ""));
@@ -50,14 +56,13 @@ export default function Body({ user, events }) {
         user: user.uid,
         title: parsedObj.title,
         date: new Date(parsedObj.date).getTime(),
-        notes: "Gemini prompt: " + aiText,
+        notes: "Gemini prompt: " + input,
         repeat: parsedObj.repeat,
       });
     } catch (error) {
       setFailed(true);
       console.error(error);
     }
-    setAiText("");
     setLoading(false);
   };
 
