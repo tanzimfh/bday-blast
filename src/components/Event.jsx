@@ -21,7 +21,7 @@ export default function Event({ event, handleEdit, editDate, handleDelete }) {
 
   let canMove = false;
   let nextDate = 0;
-  if (days < 0 && repeat && repeat !== "Once") {
+  if (days <= 0 && repeat && repeat !== "Once") {
     canMove = true;
     if (repeat === "Daily") nextDate = now;
     else if (repeat === "Weekly")
