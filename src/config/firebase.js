@@ -36,7 +36,7 @@ export const model = getGenerativeModel(vertexAI, {
 });
 
 export const db = getFirestore(app);
-export const collectionRef = collection(db, "events-dev");
+export const collectionRef = collection(db, "events");
 export const auth = getAuth();
 export const provider = new GoogleAuthProvider();
 
