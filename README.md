@@ -9,5 +9,5 @@ SDK, which lets you create events using Gemini!
 
 ### Screenshots
 
-![1](https://github.com/user-attachments/assets/579419ad-c3c4-4cbf-a0c9-eb4de0ffdcc6)
-![2](https://github.com/user-attachments/assets/01735fde-7c35-416d-9c65-1fa4dcd2d176)
+<img src="https://github.com/user-attachments/assets/579419ad-c3c4-4cbf-a0c9-eb4de0ffdcc6" width="256">
+<img src="https://github.com/user-attachments/assets/01735fde-7c35-416d-9c65-1fa4dcd2d176" width="256">
