@@ -1,10 +1,11 @@
 import { doc, addDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { collectionRef, model } from "../config/firebase";
+import { collectionRef /** model */ } from "../config/firebase";
 
 import { useState } from "react";
 import Event from "./Event";
 
 import { HiSparkles } from "react-icons/hi2";
+import { PiProhibitBold } from "react-icons/pi";
 
 export default function Body({ user, events }) {
   const now = new Date();
@@ -28,6 +29,7 @@ export default function Body({ user, events }) {
   const [notes, setNotes] = useState("");
   const [repeat, setRepeat] = useState("");
 
+  /**
   const handleAiAdd = async (e) => {
     e.preventDefault();
     const input = aiText;
@@ -65,6 +67,7 @@ export default function Body({ user, events }) {
     }
     setLoading(false);
   };
+  */
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -111,17 +114,21 @@ export default function Body({ user, events }) {
     }
   };
 
+  /**
   const onEnterPress = (e) => {
     if (e.key === "Enter" && e.shiftKey === false) {
       e.preventDefault();
       handleAiAdd(e);
     }
   };
+  */
 
   return (
     <div className="w-[calc(100vw-2rem)] max-w-96">
       <form
-        onSubmit={handleAiAdd}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
         className="bg-neutral-200 text-black p-3 mt-8 rounded-lg flex-col flex"
       >
         <textarea
@@ -135,7 +142,7 @@ export default function Body({ user, events }) {
             setFailed(false);
             setAiText(e.target.value);
           }}
-          onKeyDown={onEnterPress}
+          // onKeyDown={onEnterPress}
           required
           rows={2}
           maxLength={100}
@@ -144,6 +151,7 @@ export default function Body({ user, events }) {
             (failed ? " placeholder:text-red-400" : "")
           }
         />
+        {/**
         <button className="flex-row flex items-center justify-center mt-2 h-12 rounded-lg bg-gradient-to-r from-blue-400 via-pink-400 to-blue-400 bg-size-200 bg-pos-0 hover:bg-pos-100 duration-500 transition-all ease-out">
           {loading ? (
             <div className="h-6 w-6 mr-2 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-white" />
@@ -154,6 +162,16 @@ export default function Body({ user, events }) {
             Let Gemini handle it
           </div>
         </button>
+        */}
+        <div
+          className="flex-row flex items-center justify-center mt-2 h-12 rounded-lg bg-neutral-300"
+          title="my Google Cloud trial ran out :("
+        >
+          <PiProhibitBold className="size-6 mr-2 fill-neutral-500" />
+          <div className="text-lg text-neutral-500 drop-shadow-lg font-semibold">
+            Let Gemini handle it
+          </div>
+        </div>
       </form>
 
       <div className="flex flex-row mt-2 items-center">

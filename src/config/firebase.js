@@ -3,7 +3,7 @@ import {
   initializeAppCheck,
   ReCaptchaEnterpriseProvider,
 } from "firebase/app-check";
-import { getVertexAI, getGenerativeModel } from "firebase/vertexai-preview";
+// import { getVertexAI, getGenerativeModel } from "firebase/vertexai-preview";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, collection } from "firebase/firestore";
 
@@ -27,6 +27,7 @@ initializeAppCheck(app, {
   isTokenAutoRefreshEnabled: true,
 });
 
+/**
 const vertexAI = getVertexAI(app);
 
 export const model = getGenerativeModel(vertexAI, {
@@ -43,6 +44,7 @@ export const model = getGenerativeModel(vertexAI, {
     best judgement to infer it. If a field can't be inferred at all, leave it as
    "N/A".`,
 });
+*/
 
 export const db = getFirestore(app);
 export const collectionRef = collection(db, "events");
