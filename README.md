@@ -4,7 +4,7 @@ Initially created to help me remember birthdays, this web app helps you keep
 track of important events.
 
 ### Firebase
-The app uses several Firebase products, including the Vertex AI for Firebase
+The app uses several Firebase products, including the Vertex AI in Firebase
 SDK, which lets you create events using Gemini!
 
 ### Screenshots
